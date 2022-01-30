@@ -33,6 +33,20 @@ Register With Nonmatching Password And Password Confirmation
     Submit Registration
     Registation Should Fail With Message  Passwords do not match
 
+Login After Successful Registration
+    Go To Login Page
+    Set Username  aapeli
+    Set Password  salasana123
+    Submit Credentials
+    Login Should Succeed
+
+Login After Failed Registration
+    Go To Login Page
+    Set Username  erkki
+    Set Password  salasana123
+    Submit Credentials
+    Login Should Fail With Message  Invalid username or password
+
 *** Keywords ***
 Start And Go To Register Page
     Go To Register Page
@@ -59,4 +73,15 @@ Registration Should Succeed
 Registation Should Fail With Message
     [Arguments]  ${message}
     Register Page Should Be Open
+    Page Should Contain  ${message}
+
+Submit Credentials
+    Click Button  Login
+
+Login Should Succeed
+    Main Page Should Be Open
+
+Login Should Fail With Message
+    [Arguments]  ${message}
+    Login Page Should Be Open
     Page Should Contain  ${message}
