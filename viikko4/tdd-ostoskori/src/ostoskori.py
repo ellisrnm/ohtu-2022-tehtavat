@@ -26,7 +26,6 @@ class Ostoskori:
                 ostos.muuta_lukumaaraa(1)
                 return
         self.korissa.append(Ostos(lisattava))
-        pass
 
     def poista_tuote(self, poistettava: Tuote):
         # poistaa tuotteen
