@@ -78,9 +78,50 @@ class TestKauppa(unittest.TestCase):
         self.pankki_mock.tilisiirto.assert_called_with("elias", ANY, "33233", ANY, 10)
 
     def test_pankin_metodia_tilisiirto_kutsutaan_oikeilla_arvoilla_kaksi_tuotetta_toinen_loppunut(self):
+        
         self.kauppa.aloita_asiointi()
         self.kauppa.lisaa_koriin(1)
         self.kauppa.lisaa_koriin(3)
         self.kauppa.tilimaksu("mauno", "10000")
 
         self.pankki_mock.tilisiirto.assert_called_with("mauno", ANY, "10000", ANY, 5)
+    
+    def test_aloita_asiointi_nollaa_edellisen_ostoksen(self):
+
+        self.kauppa.aloita_asiointi()
+        self.kauppa.lisaa_koriin(1)
+        self.kauppa.lisaa_koriin(1) #hinta 10
+
+        self.kauppa.aloita_asiointi()
+        self.kauppa.lisaa_koriin(1)
+        self.kauppa.tilimaksu("mauno", "10000") #hinta 5
+
+        self.pankki_mock.tilisiirto.assert_called_with(ANY, ANY, ANY, ANY, 5)
+
+    def test_uusi_viite_jokaiselle_maksutapahtumalle(self):
+
+        self.kauppa.aloita_asiointi()
+        self.kauppa.lisaa_koriin(1)
+        self.kauppa.tilimaksu("pekka", "12345")
+        self.assertEqual(self.viitegeneraattori_mock.uusi.call_count, 1)
+
+        self.kauppa.aloita_asiointi()
+        self.kauppa.lisaa_koriin(2)
+        self.kauppa.tilimaksu("elias", "33233")
+        self.assertEqual(self.viitegeneraattori_mock.uusi.call_count, 2)
+
+        self.kauppa.aloita_asiointi()
+        self.kauppa.lisaa_koriin(1)
+        self.kauppa.lisaa_koriin(2)
+        self.kauppa.tilimaksu("mauno", "10000")
+        self.assertEqual(self.viitegeneraattori_mock.uusi.call_count, 3)
+
+    def test_pankin_metodia_tilisiirto_kutsutaan_oikeilla_arvoilla_tuotteen_poiston_jalkeen(self):
+
+        self.kauppa.aloita_asiointi()
+        self.kauppa.lisaa_koriin(1)
+        self.kauppa.lisaa_koriin(2)
+        self.kauppa.poista_korista(2)
+        self.kauppa.tilimaksu("jouko", "55551")
+
+        self.pankki_mock.tilisiirto.assert_called_with("jouko", ANY, "55551", ANY, 5)
