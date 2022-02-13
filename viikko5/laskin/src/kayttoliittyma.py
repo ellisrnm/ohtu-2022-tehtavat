@@ -14,6 +14,7 @@ class Summa:
         self._syote = syote
 
     def suorita(self):
+        self._sovellus.tallenna_edellinen()
         self._sovellus.plus(self._syote())
 
 class Erotus:
@@ -22,6 +23,7 @@ class Erotus:
         self._syote = syote
 
     def suorita(self):
+        self._sovellus.tallenna_edellinen()
         self._sovellus.miinus(self._syote())
 
 class Nollaus:
@@ -30,6 +32,7 @@ class Nollaus:
         self._syote = syote
 
     def suorita(self):
+        self._sovellus.tallenna_edellinen()
         self._sovellus.nollaa()
 
 class Kumoa:
@@ -38,7 +41,7 @@ class Kumoa:
         self._syote = syote
 
     def suorita(self):
-        pass
+        self._sovellus.aseta_arvo(self._sovellus.edellinen)
 
 class Kayttoliittyma:
     def __init__(self, sovellus, root):
